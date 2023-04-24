@@ -6,7 +6,7 @@ ARG GROUP_ID
 
 # Install some stuff
 RUN apt-get update && \
-    apt-get install -y vim git libtbb-dev python python3-pip python3-tk sudo
+    apt-get install -y vim git libtbb-dev python python3-pip sudo
 
 # Create a new user called "aligner" (the default user)
 # Add it to the sudo group
