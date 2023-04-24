@@ -6,7 +6,7 @@ ARG GROUP_ID
 
 # Install some stuff
 RUN apt-get update && \
-    apt-get install -y vim git libtbb-dev pip
+    apt-get install -y vim git libtbb-dev python python3-pip python3-tk sudo
 
 # Create a new user called "aligner" (the default user)
 # Add it to the sudo group
@@ -14,8 +14,6 @@ RUN groupadd -g ${GROUP_ID} aligner &&\
     useradd -m -u ${USER_ID} -g aligner -G sudo aligner
 # Add password
 RUN echo "aligner:password" | chpasswd
-# Allow users in the wheel group to run commands with sudo
-RUN echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers
 
 USER aligner
 

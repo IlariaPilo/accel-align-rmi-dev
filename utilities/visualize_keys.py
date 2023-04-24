@@ -3,6 +3,10 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
+import matplotlib
+
+matplotlib.use('TkAgg')
+
 
 # Thanks @ ChatGPT for this script!
 
@@ -53,4 +57,4 @@ def update(val):
 
 slider.on_changed(update)
 
-plt.show()
+plt.show(block=True)
