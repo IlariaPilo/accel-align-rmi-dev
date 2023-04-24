@@ -11,5 +11,5 @@ input_dir=$(realpath $input_dir)
 
 echo "Using input directory $input_dir"
 
-docker run -v $input_dir:/home/aligner/accel-align-rmi/data \
+docker run --rm -v $input_dir:/home/aligner/accel-align-rmi/data \
     -it docker-align
