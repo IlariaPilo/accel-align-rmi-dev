@@ -25,16 +25,18 @@ if [ ! -e $keys_name ]; then
   ./bin/key_gen $ref_name
 else
   # The file exists, so ask the user before executing
-  read -p "\033[1;33m [index.sh] \033[0mkey_gen output already exists. Do you want to execute the command anyway? [y/n]" choice
+  read -ep $'\033[1;33m [index.sh] \033[0mkey_gen output already exists. Do you want to execute the command anyway? [y/n]' choice
   case "$choice" in 
     y|Y ) 
       ./bin/key_gen $ref_name ;;
     * ) 
-      echo "\033[1;33m [index.sh] \033[0mcommand not executed" ;;
+      echo -e "\033[1;33m [index.sh] \033[0mcommand not executed" ;;
   esac
 fi
 
 echo "DONE"
+
+keys_name=$(realpath $keys_name)
 
 # Build the index
 echo -e "\n\033[1;35m [index.sh] \033[0mBuilding the index..."
