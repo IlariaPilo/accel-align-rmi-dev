@@ -9,7 +9,8 @@ fi
 
 ref_name=$1
 # The output file will be
-keys_name="${ref_name}_keys_uint32"
+base_name=$(basename $ref_name .fna)
+keys_name="${base_name}_keys_uint32"
 
 echo -e "\n\033[1;35m [index.sh] \033[0mBuilding index on file $ref_name\n"
 
