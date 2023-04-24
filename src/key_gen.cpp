@@ -129,28 +129,30 @@ bool Index::key_gen(const char *F) {
 
   ofstream fo(fn.c_str(), ios::binary);
 
-  // determine the number of valid entries based on first junk entry
-  auto joff = std::lower_bound(data.begin(), data.end(), Data(-1, -1), Data());
-  uint64_t eof = joff - data.begin();
+  // determine the number of valid entries 
+  uint64_t eof = 0;
+  for(auto i : data) {
+    (i.key != (uint32_t) -1) && eof++;
+  }
   cerr << "Found " << eof << " valid entries out of " <<
        data.size() << " total\n";
   fo.write((char *) &eof, 8);
 
   // write out keys
-  for (size_t i = eof; i < data.size(); i++)
-    assert(data[i].key == (uint32_t) -1);
   try {
     cerr << "Fast writing keys (" << eof << ")\n";
     uint32_t *buf = new uint32_t[eof];
-    for (size_t i = 0; i < eof; i++) {
-      buf[i] = data[i].key;
+    for (size_t i = 0; i < data.size(); i++) {
+      if (data[i].key != (uint32_t) -1)
+        buf[i] = data[i].key;
     }
     fo.write((char *) buf, eof * sizeof(uint32_t));
     delete[] buf;
   } catch (std::bad_alloc& e) {
     cerr << "Fall back to slow writing keys due to low mem.\n";
-    for (size_t i = 0; i < eof; i++) {
-      fo.write((char *) &data[i].key, 4);
+    for (size_t i = 0; i < data.size(); i++) {
+      if (data[i].key != (uint32_t) -1)
+        fo.write((char *) &data[i].key, 4);
     }
   }
   cerr << "Indexing complete\n";
