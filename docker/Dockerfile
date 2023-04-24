@@ -6,7 +6,7 @@ ARG GROUP_ID
 
 # Install some stuff
 RUN apt-get update && \
-    apt-get install -y vim git libtbb-dev
+    apt-get install -y vim git libtbb-dev pip
 
 # Create a new user called "aligner" (the default user)
 # Add it to the sudo group
@@ -24,8 +24,8 @@ WORKDIR /home/aligner
 ADD https://api.github.com/repos/IlariaPilo/accel-align-rmi/git/refs/heads/main version.json
 RUN git clone --recurse-submodules https://github.com/IlariaPilo/accel-align-rmi
 # Install python dependencies
-# RUN cd hashing-benchmark-docker && \
-#    pip install --no-cache-dir -r requirements.txt
+RUN cd accel-align-rmi && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Run a shell as first operation
 CMD ["/bin/bash"]
