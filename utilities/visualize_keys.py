@@ -38,7 +38,7 @@ with open(file_path, "rb") as f:
     f.seek(8)  # Skip the first 8 bytes
     data = np.fromfile(f, dtype=np.uint32, count=num_keys)
 
-bins_number = math.round(1 + math.log2(num_keys))
+bins_number = round(1 + math.log2(num_keys))
 
 # Plot the key distribution
 plt.hist(data, bins=bins_number)
