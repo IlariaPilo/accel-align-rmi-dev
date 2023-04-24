@@ -142,9 +142,9 @@ bool Index::key_gen(const char *F) {
   try {
     cerr << "Fast writing keys (" << eof << ")\n";
     uint32_t *buf = new uint32_t[eof];
-    for (size_t i = 0; i < data.size(); i++) {
+    for (size_t i = 0, i_buf = 0; i < data.size(); i++) {
       if (data[i].key != (uint32_t) -1)
-        buf[i] = data[i].key;
+        buf[i_buf++] = data[i].key;
     }
     fo.write((char *) buf, eof * sizeof(uint32_t));
     delete[] buf;
