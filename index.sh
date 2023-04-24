@@ -6,7 +6,11 @@ if [ $# -eq 0 ]; then
     echo -e "Builds a learned index for the <reference.fna> reference string.\n"
     exit
 fi
+
 ref_name=$1
+# The output file will be
+keys_name="${ref_name}_keys_uint32"
+
 echo -e "\n\033[1;35m [index.sh] \033[0mBuilding index on file $ref_name\n"
 
 echo -e "\n\033[1;35m [index.sh] \033[0mCompiling the key_gen program..."
@@ -14,11 +18,21 @@ make
 echo "DONE"
 
 echo -e "\n\033[1;35m [index.sh] \033[0mRunning key_gen..."
-./bin/key_gen $ref_name
-echo "DONE"
+if [ ! -e $keys_name ]; then
+  # The file does not exist, so execute the command
+  ./bin/key_gen $ref_name
+else
+  # The file exists, so ask the user before executing
+  read -p "\033[1;33m [index.sh] \033[0mkey_gen output already exists. Do you want to execute the command anyway? [y/n]" choice
+  case "$choice" in 
+    y|Y ) 
+      ./bin/key_gen $ref_name ;;
+    * ) 
+      echo "\033[1;33m [index.sh] \033[0mcommand not executed" ;;
+  esac
+fi
 
-# The output file will be
-keys_name="${ref_name}_keys_uint32"
+echo "DONE"
 
 # Build the index
 echo -e "\n\033[1;35m [index.sh] \033[0mBuilding the index..."
