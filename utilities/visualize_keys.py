@@ -43,4 +43,4 @@ plt.title("Key Distribution")
 plt.xlabel("Key")
 plt.ylabel("Frequency")
 
-plt.savefig(clean_filename + "_distribution.jpg")
+plt.savefig(clean_path + "_distribution.jpg")
