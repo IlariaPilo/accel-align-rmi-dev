@@ -2,6 +2,7 @@
 
 A version of [Accel-Align](https://github.com/raja-appuswamy/accel-align-release) using the RMI index.
 
+
 ## Clone
 The repository can be cloned by running the following command:
 ```

@@ -5,19 +5,6 @@ const unsigned mod = (1UL << 29) - 1;
 const unsigned step = 1;
 unsigned kmer;
 
-// Utility function to remove the extension from a filename
-std::string remove_extension(const std::string& filename) {
-    size_t last_dot = filename.find_last_of(".");
-    if (last_dot == std::string::npos) {
-        // If there's no dot in the filename, return the filename as is.
-        return filename;
-    }
-    else {
-        // Return the filename up to (but not including) the last dot.
-        return filename.substr(0, last_dot);
-    }
-}
-
 // a structure of pairs (key, position)
 struct Data {
   uint32_t key, pos;
@@ -117,8 +104,7 @@ bool Index::key_gen(const char *F) {
   else
     vsz = ref.size() / step + 1;
 
-  string fn = remove_extension(F);
-  fn += "_keys_uint32";
+  string fn = "keys_uint32";
   cerr << "writing in " << fn << endl;
 
   vector<Data> data(vsz, Data());

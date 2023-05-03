@@ -38,3 +38,6 @@
 
 # Local
 local*
+
+# Indices
+*_index/*
