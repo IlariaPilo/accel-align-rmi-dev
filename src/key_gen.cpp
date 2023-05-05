@@ -104,24 +104,35 @@ bool Index::key_gen(const char *F) {
   else
     vsz = ref.size() / step + 1;
 
-  string fn = "keys_uint32";
-  cerr << "writing in " << fn << endl;
-
   vector<Data> data(vsz, Data());
   cerr << "hashing :limit = " << limit << ", vsz = " << vsz << endl;
 
+  // get the hash for each key
   tbb::parallel_for(tbb::blocked_range<size_t>(0, limit), Tbb_cal_key(data, this));
   cerr << "hash\t" << data.size() << endl;
 
+  // sort keys
+  //XXX: Parallel sort uses lots of memory. Need to fix this. In general, we
+  //use 8 bytes per item. Its a waste.
+  try {
+    cerr << "Attempting parallel sorting\n";
+    tbb::parallel_sort(data.begin(), data.end(), Data());
+  } catch (std::bad_alloc e) {
+    cerr << "Fall back to serial sorting (low mem)\n";
+    sort(data.begin(), data.end(), Data());
+  }
+
+  string fn = "keys_uint32";
+  cerr << "writing in " << fn << endl;
+
   ofstream fo(fn.c_str(), ios::binary);
 
-  // determine the number of valid entries 
-  uint64_t eof = 0;
-  for(auto i : data) {
-    (i.key != (uint32_t) -1) && eof++;
-  }
+  // determine the number of valid entries based on first junk entry
+  auto joff = std::lower_bound(data.begin(), data.end(), Data(-1, -1), Data());
+  uint64_t eof = (uint64_t)(joff - data.begin());
   cerr << "Found " << eof << " valid entries out of " <<
        data.size() << " total\n";
+  // The number of entries is required to be a 64-bit value
   fo.write((char *) &eof, 8);
 
   // write out keys
