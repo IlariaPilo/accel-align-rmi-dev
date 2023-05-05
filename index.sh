@@ -1,11 +1,12 @@
 #!/bin/bash
+set -e  # Stop if there is a failure
 
 ################################### INTRO ###################################
 
 # Check if the user has provided an argument
 if [ $# -eq 0 ]; then
     echo -e "\n\033[1;35m\tbash index.sh <reference.fna> [<thread_number>]\033[0m"
-    echo -e "Builds a learned index for the <reference.fna> reference string.\n"
+    echo -e "Builds a learned index for the <reference.fna> reference string."
     echo -e "Use <thread_number> to specify the number of threads to be used. If not specified, it will be set to the number of available CPUs.\n"
     exit
 fi
