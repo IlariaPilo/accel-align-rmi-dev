@@ -78,5 +78,5 @@ cp ../../rmi/target/release/rmi .
 echo "DONE"
 
 # Run RMI optimization
-./rmi --threads $thread_number --optimize optimizer_out.json ./keys_unit32
+./rmi --threads $thread_number --optimize optimizer_out.json ./keys_uint32
 
