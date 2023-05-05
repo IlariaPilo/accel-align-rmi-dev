@@ -25,5 +25,7 @@ RUN git clone --recurse-submodules https://github.com/IlariaPilo/accel-align-rmi
 RUN cd accel-align-rmi && \
     pip install --no-cache-dir -r requirements.txt
 
+WORKDIR /home/aligner/accel-align-rmi
+
 # Run a shell as first operation
 CMD ["/bin/bash"]
