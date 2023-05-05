@@ -18,13 +18,13 @@ dir_name=$(dirname $ref_name)               # ./data
 base_name=$(basename $ref_name .fna)        # hg37
 
 # Make output directory
-OUTPUT_DIR="${dir_name}/${base_name}_index" # hg37_index
+OUTPUT_DIR="${dir_name}/${base_name}_index" # ./data/hg37_index
 OUTPUT_DIR=$(realpath $OUTPUT_DIR)
 
 # TODO - possibly add a prefix
 mkdir -p $OUTPUT_DIR
 
-keys_name="${OUTPUT_DIR}/keys_uint32"       # hg37_index/keys_unit32
+keys_name="${OUTPUT_DIR}/keys_uint32"       # ./data/hg37_index/keys_unit32
 
 # Get number of threads
 if [ $# -eq 1 ]; then
@@ -48,13 +48,13 @@ cd $OUTPUT_DIR                             # ----> NOW WE ARE IN hg37_index/keys
 echo -e "\n\033[1;35m [index.sh] \033[0mRunning key_gen..."
 if [ ! -e $keys_name ]; then
   # The file does not exist, so execute the command
-  ../bin/key_gen $ref_name
+  ../../bin/key_gen $ref_name
 else
   # The file exists, so ask the user before executing
   read -ep $'\033[1;33m [index.sh] \033[0mkey_gen output already exists. Do you want to execute the command anyway? [y/n]' choice
   case "$choice" in 
     y|Y ) 
-      ../bin/key_gen $ref_name 
+      ../../bin/key_gen $ref_name 
       ;;
     * ) 
       echo -e "\033[1;33m [index.sh] \033[0mcommand not executed" ;;
