@@ -48,8 +48,7 @@ cd $OUTPUT_DIR                             # ----> NOW WE ARE IN hg37_index/keys
 echo -e "\n\033[1;35m [index.sh] \033[0mRunning key_gen..."
 if [ ! -e $keys_name ]; then
   # The file does not exist, so execute the command
-  #../bin/key_gen $ref_name
-  echo LOL
+  ../bin/key_gen $ref_name
 else
   # The file exists, so ask the user before executing
   read -ep $'\033[1;33m [index.sh] \033[0mkey_gen output already exists. Do you want to execute the command anyway? [y/n]' choice
@@ -70,12 +69,12 @@ echo "DONE"
 
 echo -e "\n\033[1;35m [index.sh] \033[0mBuilding the index..."
 # Build the index - if it has not being compiled yet
-if [ ! -e ../rmi/target/release/rmi ]; then
-  cd ../rmi && cargo build --release
+if [ ! -e ../../rmi/target/release/rmi ]; then
+  cd ../../rmi && cargo build --release
   cd $OUTPUT_DIR
 fi
 
-cp ../rmi/target/release/rmi .
+cp ../../rmi/target/release/rmi .
 echo "DONE"
 
 # Run RMI optimization
