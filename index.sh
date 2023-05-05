@@ -69,12 +69,13 @@ echo "DONE"
 
 echo -e "\n\033[1;35m [index.sh] \033[0mBuilding the index..."
 # Build the index - if it has not being compiled yet
-if [ ! -e ../../rmi/target/release/rmi ]; then
+if ! [ -e ../../rmi/target/release/rmi ] && ! [ -e ./rmi ]; then
   cd ../../rmi && cargo build --release
   cd $OUTPUT_DIR
+elif [[ ! -e ./rmi ]]; then
+  # Copy it
+  cp ../../rmi/target/release/rmi .
 fi
-
-cp ../../rmi/target/release/rmi .
 echo "DONE"
 
 # Run RMI optimization

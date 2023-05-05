@@ -22,7 +22,7 @@ class Index {
   string ref;
  public:
   bool load_ref(const char *F);
-  bool key_gen(const char *F);
+  bool key_gen();
   void cal_key(size_t i, vector<Data> &data);
 };
 
@@ -96,7 +96,7 @@ class Tbb_cal_key {
 };
 
 // TODO - save positions somewhere (up to now, only keys)
-bool Index::key_gen(const char *F) {
+bool Index::key_gen() {
   size_t limit = ref.size() - kmer + 1;
   size_t vsz;
   if (step == 1)
@@ -117,7 +117,7 @@ bool Index::key_gen(const char *F) {
   try {
     cerr << "Attempting parallel sorting\n";
     tbb::parallel_sort(data.begin(), data.end(), Data());
-  } catch (std::bad_alloc e) {
+  } catch (std::bad_alloc& e) {
     cerr << "Fall back to serial sorting (low mem)\n";
     sort(data.begin(), data.end(), Data());
   }
@@ -176,7 +176,7 @@ int main(int argc, char **argv) {
   Index i;
   if (!i.load_ref(argv[argc - 1]))
     return 0;
-  if (!i.key_gen(argv[argc - 1]))
+  if (!i.key_gen())
     return 0;
   return 0;
 }
