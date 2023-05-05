@@ -10,20 +10,20 @@ if [ $# -eq 0 ]; then
     exit
 fi
 
-ref_name=$1                                # ./data/hg37.fna
+ref_name=$1                                 # ./data/hg37.fna
 ref_name=$(realpath $ref_name)
 # The output file will be
-dir_name=$(dirname $ref_name)              # ./data
-base_name=$(basename $ref_name .fna)       # hg37
+dir_name=$(dirname $ref_name)               # ./data
+base_name=$(basename $ref_name .fna)        # hg37
 
 # Make output directory
-OUTPUT_DIR="./${base_name}_index"          # hg37_index
+OUTPUT_DIR="${dir_name}/${base_name}_index" # hg37_index
 OUTPUT_DIR=$(realpath $OUTPUT_DIR)
 
 # TODO - possibly add a prefix
 mkdir -p $OUTPUT_DIR
 
-keys_name="${OUTPUT_DIR}/keys_uint32"      # hg37_index/keys_unit32
+keys_name="${OUTPUT_DIR}/keys_uint32"       # hg37_index/keys_unit32
 
 # Get number of threads
 if [ $# -eq 1 ]; then
