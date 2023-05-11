@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e  # Stop if there is a failure
+_redo_=0
 
 ################################### INTRO ###################################
 
@@ -8,6 +9,7 @@ if [ $# -eq 0 ]; then
     echo -e "\n\033[1;35m\tbash index.sh <reference.fna> [<thread_number>]\033[0m"
     echo -e "Builds a learned index for the <reference.fna> reference string."
     echo -e "Use <thread_number> to specify the number of threads to be used. If not specified, it will be set to the number of available CPUs.\n"
+    # TODO - echo -e "Pass _clean_ as second parameter to delete the index related to <reference.fna>.\n"
     exit
 fi
 
@@ -21,7 +23,6 @@ base_name=$(basename $ref_name .fna)        # hg37
 OUTPUT_DIR="${dir_name}/${base_name}_index" # ./data/hg37_index
 OUTPUT_DIR=$(realpath $OUTPUT_DIR)
 
-# TODO - possibly add a prefix
 mkdir -p $OUTPUT_DIR
 
 keys_name="${OUTPUT_DIR}/keys_uint32"       # ./data/hg37_index/keys_unit32
@@ -37,23 +38,27 @@ fi
 echo -e "\n\033[1;35m [index.sh] \033[0mBuilding index on file $ref_name"
 echo -e "            --- Using $thread_number threads.\n"
 
+
 ################################### KEY_GEN ###################################
 
 echo -e "\n\033[1;35m [index.sh] \033[0mCompiling the key_gen program..."
 make bin/key_gen
-echo "DONE"
+
 
 cd $OUTPUT_DIR                             # ----> NOW WE ARE IN hg37_index/keys_unit32
 
 echo -e "\n\033[1;35m [index.sh] \033[0mRunning key_gen..."
 if [ ! -e $keys_name ]; then
   # The file does not exist, so execute the command
-  ../../bin/key_gen $ref_name
+  # FIXME
+  #../../bin/key_gen $ref_name
+  echo AAAAAAAAAAAAAAAAAA
 else
   # The file exists, so ask the user before executing
-  read -ep $'\033[1;33m [index.sh] \033[0mkey_gen output already exists. Do you want to execute the command anyway? [y/n]' choice
+  read -ep $'\033[1;33m [index.sh] \033[0mkey_gen output already exists. Do you want to execute the command anyway? [y/N] ' choice
   case "$choice" in 
-    y|Y ) 
+    y|Y )
+      _redo_=1 
       ../../bin/key_gen $ref_name 
       ;;
     * ) 
@@ -61,9 +66,6 @@ else
   esac
 fi
 
-echo "DONE"
-
-# keys_name=$(realpath $keys_name)
 
 ################################### INDEX ###################################
 
@@ -76,8 +78,61 @@ elif [[ ! -e ./rmi ]]; then
   # Copy it
   cp ../../rmi/target/release/rmi .
 fi
-echo "DONE"
 
-# Run RMI optimization
-./rmi --threads $thread_number --optimize optimizer_out.json ./keys_uint32
+# Run RMI optimization - if not present
+if [ ! -e optimizer.json ] || [ "$_redo_" == "1" ]; then
+  # The file does not exist, so execute the command
+  ./rmi --threads $thread_number --optimize optimizer.json ./keys_uint32 > optimizer.out
+else
+  # The file exists, so ask the user before executing
+  read -ep $'\033[1;33m [index.sh] \033[0moptimizer output already exists. Do you want to execute the command anyway? [y/N] ' choice
+  case "$choice" in 
+    y|Y )
+      _redo_=1  
+      ./rmi --threads $thread_number --optimize optimizer.json ./keys_uint32 > optimizer.out
+      ;;
+    * ) 
+      echo -e "\033[1;33m [index.sh] \033[0mcommand not executed" ;;
+  esac
+fi
+
+# Print optimization result - TODO
+echo "optimization results - TODO"
+
+# Chose the best model and train it
+# The chosen parameters in rmi_type.txt as type, branching_factor, size (KB), avg_log2_err
+if [ ! -e rmi_type.txt ] || [ "$_redo_" == "1" ]; then
+  # The file does not exist, so execute the command
+  # Chose the best model somehow - TODO
+  echo "NOT READY YET!"
+  # Get the parameters
+  read type branching _ _ _ < rmi_type.txt
+  # Train the model
+  ./rmi ./keys_uint32 rmi $type $branching
+else
+  # The file exists, so ask the user before executing
+  read type branching size avg_err max_err < rmi_type.txt
+  echo -e "\033[1;33m [index.sh] \033[0mmodel has already been chosen:"
+  echo -e "               | MODEL\t\t\t$type"
+  echo -e "               | BRANCHING FACTOR\t$branching"
+  echo -e "               | SIZE (KB)\t\t$size"
+  echo -e "               | AVG LOG2 ERROR\t\t$avg_err"
+  echo -e "               | MAX LOG2 ERROR\t\t$max_err"
+  read -ep $'            do you want to train a new one? [y/N] ' choice
+  case "$choice" in 
+    y|Y ) 
+      _redo_=1 
+      # Chose the best model somehow - TODO
+      echo "NOT READY YET!"
+      # Get the parameters
+      read type branching _ _ _ < rmi_type.txt
+      # Train the model
+      ./rmi ./keys_uint32 rmi $type $branching
+      ;;
+    * ) 
+      echo -e "\033[1;33m [index.sh] \033[0mcommand not executed" ;;
+  esac
+fi
+
+
 
