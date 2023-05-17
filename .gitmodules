@@ -1,3 +1,4 @@
 [submodule "rmi"]
 	path = rmi
-	url = https://github.com/learnedsystems/rmi
+	url = https://github.com/IlariaPilo/RMI
+	branch = instrument
