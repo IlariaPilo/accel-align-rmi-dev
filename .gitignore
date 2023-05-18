@@ -28,7 +28,6 @@
 
 # Executables
 *.exe
-*.out
 *.app
 *.bin
 /bin/
@@ -39,6 +38,7 @@
 # Local
 local*
 TODO
+data/benchmarking/*uint*
 
 # Indices
 */*_index/*
