@@ -72,7 +72,8 @@ echo -e "\n\033[1;35m [index.sh] \033[0mBuilding the index..."
 if ! [ -e ../../rmi/target/release/rmi ] && ! [ -e ./rmi ]; then
   cd ../../rmi && cargo build --release
   cd $OUTPUT_DIR
-elif [[ ! -e ./rmi ]]; then
+fi
+if [[ ! -e ./rmi ]]; then
   # Copy it
   cp ../../rmi/target/release/rmi .
 fi
@@ -94,8 +95,8 @@ else
   esac
 fi
 
-# Print optimization result - TODO
-echo "optimization results - TODO"
+# Print optimization result
+cat optimizer.out
 
 # Chose the best model and train it
 # The chosen parameters in rmi_type.txt as type, branching_factor, size (KB), avg_log2_err
