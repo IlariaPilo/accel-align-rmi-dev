@@ -1,4 +1,4 @@
-Executed with 4 threads
+Running with 4 threads
 
 -------- wiki_ts_200M_uint64 --------
 Models                   Branch        AvgLg2        MaxLg2       Size (B)   Build time (ns)
