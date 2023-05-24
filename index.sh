@@ -104,34 +104,34 @@ if [ ! -e rmi_type.txt ] || [ "$_redo_" == "1" ]; then
   # The file does not exist, so execute the command
   # Chose the best model somehow - TODO
   echo "NOT READY YET!"
-  # Get the parameters
-  read type branching _ _ _ < rmi_type.txt
-  # Train the model
-  ./rmi ./keys_uint32 rmi $type $branching
 else
   # The file exists, so ask the user before executing
-  read type branching size avg_err max_err < rmi_type.txt
+  read type branching size avg_err max_err b_time < rmi_type.txt
   echo -e "\033[1;33m [index.sh] \033[0mmodel has already been chosen:"
   echo -e "               | MODEL\t\t\t$type"
   echo -e "               | BRANCHING FACTOR\t$branching"
-  echo -e "               | SIZE (KB)\t\t$size"
+  echo -e "               | SIZE (B)\t\t$size"
   echo -e "               | AVG LOG2 ERROR\t\t$avg_err"
   echo -e "               | MAX LOG2 ERROR\t\t$max_err"
+  echo -e "               | BUILD TIME\t\t$b_time"
   read -ep $'            do you want to train a new one? [y/N] ' choice
   case "$choice" in 
     y|Y ) 
       _redo_=1 
       # Chose the best model somehow - TODO
       echo "NOT READY YET!"
-      # Get the parameters
-      read type branching _ _ _ < rmi_type.txt
-      # Train the model
-      ./rmi ./keys_uint32 rmi $type $branching
       ;;
     * ) 
       echo -e "\033[1;33m [index.sh] \033[0mcommand not executed" ;;
   esac
 fi
+
+# TODO - if clause
+
+# Get the parameters
+read type branching _ _ _ _ < rmi_type.txt
+# Train the model
+./rmi ./keys_uint32 rmi $type $branching
 
 
 
