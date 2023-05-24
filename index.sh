@@ -13,6 +13,7 @@ if [ $# -eq 0 ]; then
     exit
 fi
 
+INITIAL_DIR=$(pwd)
 ref_name=$1                                 # ./data/hg37.fna
 ref_name=$(realpath $ref_name)
 # The output file will be
@@ -126,12 +127,15 @@ else
   esac
 fi
 
-# TODO - if clause
+if [ ! -e rmi.h ] || [ "$_redo_" == "1" ]; then
+  # Get the parameters
+  read type branching _ _ _ _ < rmi_type.txt
+  echo -e "\n\033[1;35m [index.sh] \033[0mTraining the $type ($branching) index"
+  # Train the model
+  ./rmi ./keys_uint32 rmi $type $branching
+else
+  echo -e "\n\033[1;35m [index.sh] \033[0mIndex already exists!\n"
+fi
+echo -e "\n\033[1;35m [index.sh] \033[0mDone!\n"
 
-# Get the parameters
-read type branching _ _ _ _ < rmi_type.txt
-# Train the model
-./rmi ./keys_uint32 rmi $type $branching
-
-
-
+cd $INITIAL_DIR
