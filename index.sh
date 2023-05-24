@@ -79,7 +79,7 @@ if [[ ! -e ./rmi ]]; then
 fi
 
 # Run RMI optimization - if not present
-if [ ! -e optimizer.json ] || [ "$_redo_" == "1" ]; then
+if [ ! -e optimizer.out ] || [ "$_redo_" == "1" ]; then
   # The file does not exist, so execute the command
   ./rmi --threads $thread_number --optimize optimizer.json ./keys_uint32 > optimizer.out
 else
