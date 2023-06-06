@@ -121,7 +121,7 @@ bool Index::key_gen() {
     cerr << "Fall back to serial sorting (low mem)\n";
     sort(data.begin(), data.end(), Data());
   }
-
+  
   string fn = "keys_uint32";
   cerr << "writing in " << fn << endl;
 
@@ -139,17 +139,32 @@ bool Index::key_gen() {
   try {
     cerr << "Fast writing keys (" << eof << ")\n";
     uint32_t *buf = new uint32_t[eof];
+    // the previous value
+    uint32_t prec = (uint32_t) -1;
+    // the actual eof
+    uint64_t actual_eof = 0; 
+
     for (size_t i = 0, i_buf = 0; i < data.size(); i++) {
-      if (data[i].key != (uint32_t) -1)
+      if (data[i].key != (uint32_t) -1 && data[i].key != prec) {
         buf[i_buf++] = data[i].key;
+        prec = data[i].key;
+        actual_eof ++;
+      }
     }
-    fo.write((char *) buf, eof * sizeof(uint32_t));
+    fo.write((char *) buf, actual_eof * sizeof(uint32_t));
     delete[] buf;
+
   } catch (std::bad_alloc& e) {
     cerr << "Fall back to slow writing keys due to low mem.\n";
+    // the previous value
+    uint32_t prec = (uint32_t) -1;
+
     for (size_t i = 0; i < data.size(); i++) {
-      if (data[i].key != (uint32_t) -1)
+      if (data[i].key != (uint32_t) -1 && data[i].key != prec) {
         fo.write((char *) &data[i].key, 4);
+        prec = data[i].key;
+      }
+        
     }
   }
   cerr << "Indexing complete\n";
