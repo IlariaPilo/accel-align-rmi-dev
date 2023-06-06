@@ -22,10 +22,10 @@ WORKDIR /home/aligner
 ADD https://api.github.com/repos/IlariaPilo/accel-align-rmi-dev/git/refs/heads/main version.json
 RUN git clone --recurse-submodules https://github.com/IlariaPilo/accel-align-rmi-dev
 # Install python dependencies
-RUN cd accel-align-rmi && \
+RUN cd accel-align-rmi-dev && \
     pip install --no-cache-dir -r requirements.txt
 
-WORKDIR /home/aligner/accel-align-rmi
+WORKDIR /home/aligner/accel-align-rmi-dev
 
 # Run a shell as first operation
 CMD ["/bin/bash"]
