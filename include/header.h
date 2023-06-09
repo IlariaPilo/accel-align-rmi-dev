@@ -27,6 +27,7 @@
 #include <sys/mman.h>
 #include <sched.h>
 #include <fcntl.h>
+#include <dlfcn.h>
 
 #include <tbb/tbb.h>
 #include <tbb/flow_graph.h>

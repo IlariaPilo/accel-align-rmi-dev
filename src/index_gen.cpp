@@ -24,7 +24,8 @@ int main(int argc, char** argv) {
     std::cerr << "Library " << library << std::endl << std::endl;
 
     // First, we load the library
-    RMI rmi(library.c_str());
+    RMI rmi;
+    rmi.init(library.c_str());
     // Now, we open the files
     std::ifstream fi(in_file.c_str(), std::ios::binary);
     std::ofstream fo(out_file.c_str(), std::ios::binary);
