@@ -130,17 +130,18 @@ bool Index::key_gen() {
   // determine the number of valid and unique entries
   uint32_t prec = (uint32_t) -1;
   uint64_t eof = 0;
-  int same = 1;   // TODO - remove
+  uint32_t same;
+  size_t valid;   // the number of entries different than -1
 
-  for (size_t i = 0; i < data.size() && data[i].key != (uint32_t) -1; i++) {
+  size_t i;
+
+  for (i = 0; i < data.size() && data[i].key != (uint32_t) -1; i++) {
     if (data[i].key != prec) {
-        cerr << same << endl;   // TODO - remove
-        same = 0;  // TODO - remove
         prec = data[i].key;
         eof ++;
       }
-      same++;   // TODO - remove
   }
+  valid = i;
   cerr << "Found " << eof << " valid entries out of " <<
        data.size() << " total\n";
   // The number of entries is required to be a 64-bit value
@@ -149,31 +150,50 @@ bool Index::key_gen() {
   // write out keys
   try {
     cerr << "Fast writing keys (" << eof << ")\n";
-    uint32_t *buf = new uint32_t[eof];
+    uint32_t *buf = new uint32_t[eof*2];
     // the previous value
-    prec = (uint32_t) -1; 
+    prec = data[0].key; 
+    // the number of previous values which where the same
+    same = 0;
+    size_t i_buf;
 
-    for (size_t i = 0, i_buf = 0; i_buf < eof; i++) {
+    for (i = 0, i_buf = 0; i < valid; i++) {
       if (data[i].key != prec) {
-        buf[i_buf++] = data[i].key;
+        buf[i_buf++] = prec;
+        buf[i_buf++] = same;
         prec = data[i].key;
+        same = 0;
       }
+      same++;
     }
-    fo.write((char *) buf, eof * sizeof(uint32_t));
+    // add the last one
+    buf[i_buf++] = prec;
+    buf[i_buf] = same;
+    fo.write((char *) buf, eof*2 * sizeof(uint32_t));
     delete[] buf;
 
   } catch (std::bad_alloc& e) {
     cerr << "Fall back to slow writing keys due to low mem.\n";
     // the previous value
-    prec = (uint32_t) -1;
+    prec = data[0].key;
+    // the number of previous values which where the same
+    same = 0;
+    uint32_t buf[2];
 
-    for (size_t i = 0; i < data.size(); i++) {
-      if (data[i].key != (uint32_t) -1 && data[i].key != prec) {
-        fo.write((char *) &data[i].key, 4);
+    for (size_t i = 0; i < valid; i++) {
+      if (data[i].key != prec) {
+        buf[0] = prec;
+        buf[1] = same;
+        fo.write((char *) buf, 8);
         prec = data[i].key;
+        same = 0;
       }
-        
+      same++;
     }
+    // add the last one
+    buf[0] = prec;
+    buf[1] = same;
+    fo.write((char *) buf, 8);
   }
   cerr << "Key generation complete\n";
   fo.close();
