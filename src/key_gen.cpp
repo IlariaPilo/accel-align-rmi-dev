@@ -123,7 +123,7 @@ bool Index::key_gen() {
   }
   
   string fn = "keys_uint32";
-  cerr << "writing in " << fn << endl;
+  cerr << "writing keys in " << fn << endl;
 
   ofstream fo(fn.c_str(), ios::binary);
 
@@ -197,6 +197,34 @@ bool Index::key_gen() {
   }
   cerr << "Key generation complete\n";
   fo.close();
+
+  // now, write positions
+  string fn = "pos_uint32";
+  cerr << "writing positions in " << fn << endl;
+
+  ofstream fo(fn.c_str(), ios::binary);
+
+  eof = (uint64_t) valid;
+  fo.write((char *) &eof, 8);
+
+  try {
+    cerr << "Fast writing posv (" << eof << ")\n";
+    uint32_t *buf = new uint32_t[eof];
+    for (size_t i = 0; i < eof; i++) {
+      buf[i] = data[i].pos;
+    }
+    fo.write((char *) buf, eof * sizeof(uint32_t));
+    delete[] buf;
+  } catch (std::bad_alloc e) {
+    cerr << "Fall back to slow writing posv due to low mem.\n";
+    for (size_t i = 0; i < eof; i++) {
+      fo.write((char *) &data[i].pos, 4);
+    }
+  }
+
+  cerr << "Position generation complete\n";
+  fo.close();
+
   return true;
 }
 
