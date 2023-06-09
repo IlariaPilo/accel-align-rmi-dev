@@ -215,7 +215,7 @@ bool Index::key_gen() {
     }
     fo_pos.write((char *) buf, eof * sizeof(uint32_t));
     delete[] buf;
-  } catch (std::bad_alloc e) {
+  } catch (std::bad_alloc& e) {
     cerr << "Fall back to slow writing posv due to low mem.\n";
     for (i = 0; i < eof; i++) {
       fo_pos.write((char *) &data[i].pos, 4);
