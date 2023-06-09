@@ -17,11 +17,11 @@ int main(int argc, char** argv) {
     std::string ref_string_prefix = argv[1];
     std::string out_file = ref_string_prefix + "_index/index_uint32";
     std::string in_file = ref_string_prefix + "_index/keys_uint32";
-    std::string library = ref_string_prefix + "_index/" + get_last_directory_part(ref_string_prefix) + ".so";
+    std::string library = ref_string_prefix + "_index/" + get_last_directory_part(ref_string_prefix) + "_index.so";
 
-    std::cerr << "Reading from " << in_file << std::endl;
+    std::cerr << std::endl << "Reading from " << in_file << std::endl;
     std::cerr << "Writing to " << out_file << std::endl;
-    std::cerr << "Library " << library << std::endl;
+    std::cerr << "Library " << library << std::endl << std::endl;
 
     // First, we load the library
     RMI rmi(library.c_str());

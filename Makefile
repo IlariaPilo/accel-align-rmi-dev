@@ -23,7 +23,7 @@ $(BIN_DIR)/key_gen: ./src/key_gen.cpp | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) -o $@ $< $(TBBFLAGS)
 
 $(BIN_DIR)/index_gen: ./src/index_gen.cpp $(BIN_DIR)/rmi.o | $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(TBBFLAGS)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(TBBFLAGS) -ldl
 
 $(BIN_DIR)/rmi.o: ./src/rmi.cpp | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
