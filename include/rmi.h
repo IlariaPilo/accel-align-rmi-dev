@@ -19,7 +19,7 @@ class RMI {
   public:
     RMI();
     ~RMI();
-    void RMI::init(const char *library_prefix);
+    void init(const char *library_prefix);
     uint64_t lookup(uint64_t key, size_t* err);
 };
 
