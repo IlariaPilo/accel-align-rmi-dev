@@ -33,6 +33,8 @@
 #include <tbb/concurrent_queue.h>
 #include <tbb/parallel_sort.h>
 
+#include "rmi.h"
+
 #if !INDEX
     #include "type.h"
     #include "const.h"

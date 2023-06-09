@@ -170,7 +170,7 @@ bool Index::key_gen() {
         
     }
   }
-  cerr << "Indexing complete\n";
+  cerr << "Key generation complete\n";
   fo.close();
   return true;
 }

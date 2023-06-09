@@ -1,27 +1,28 @@
 # Compiler settings
 CXX = g++
-CXXFLAGS = -std=c++14 -Wall -Wextra -O3
+CXXFLAGS = -std=c++14 -Wall -Wextra -O3 -I./include
 
 # TBB settings
 TBB_INCLUDE = /usr/include/tbb
 TBB_LIB = /usr/lib/x86_64-linux-gnu/libtbb.so
+TBBFLAGS = -L$(TBB_PATH)/lib -ltbb
 
 # Source file and binary file paths
-SRC_DIR = src
-SRC = $(SRC_DIR)/key_gen.cpp
-BIN_DIR = bin
-BIN = $(BIN_DIR)/key_gen
+SRC=$(wildcard src/*.cpp)
+#OBJ=$(patsubst src/%.cpp, bin/%.o, $(SRC))
+BIN=$(patsubst src/%.cpp, bin/%, $(SRC))
 
 # Targets
-all: $(BIN)
+all: bin $(BIN)
 
-$(BIN): $(SRC) | $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) -o $@ $< -L$(TBB_PATH)/lib -ltbb
+bin/%: src/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $< $(TBBFLAGS)
 
-$(BIN_DIR):
-	mkdir -p $(BIN_DIR)
+bin:
+	mkdir -p bin
+	@echo $(BIN)
 
 clean:
-	rm -rf $(BIN_DIR)
+	rm -rf bin
 
 .PHONY: all clean
