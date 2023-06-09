@@ -130,11 +130,16 @@ bool Index::key_gen() {
   // determine the number of valid and unique entries
   uint32_t prec = (uint32_t) -1;
   uint64_t eof = 0;
+  int same = 1;   // TODO - remove
+
   for (size_t i = 0; i < data.size() && data[i].key != (uint32_t) -1; i++) {
     if (data[i].key != prec) {
+        cerr << same << endl;   // TODO - remove
+        same = 0;  // TODO - remove
         prec = data[i].key;
         eof ++;
       }
+      same++;   // TODO - remove
   }
   cerr << "Found " << eof << " valid entries out of " <<
        data.size() << " total\n";
