@@ -125,7 +125,7 @@ bool Index::key_gen() {
   string fn = "keys_uint32";
   cerr << "writing keys in " << fn << endl;
 
-  ofstream fo(fn.c_str(), ios::binary);
+  ofstream fo_key(fn.c_str(), ios::binary);
 
   // determine the number of valid and unique entries
   uint32_t prec = (uint32_t) -1;
@@ -145,7 +145,7 @@ bool Index::key_gen() {
   cerr << "Found " << eof << " valid entries out of " <<
        data.size() << " total\n";
   // The number of entries is required to be a 64-bit value
-  fo.write((char *) &eof, 8);
+  fo_key.write((char *) &eof, 8);
 
   // write out keys
   try {
@@ -169,7 +169,7 @@ bool Index::key_gen() {
     // add the last one
     buf[i_buf++] = prec;
     buf[i_buf] = same;
-    fo.write((char *) buf, eof*2 * sizeof(uint32_t));
+    fo_key.write((char *) buf, eof*2 * sizeof(uint32_t));
     delete[] buf;
 
   } catch (std::bad_alloc& e) {
@@ -184,7 +184,7 @@ bool Index::key_gen() {
       if (data[i].key != prec) {
         buf[0] = prec;
         buf[1] = same;
-        fo.write((char *) buf, 8);
+        fo_key.write((char *) buf, 8);
         prec = data[i].key;
         same = 0;
       }
@@ -193,37 +193,37 @@ bool Index::key_gen() {
     // add the last one
     buf[0] = prec;
     buf[1] = same;
-    fo.write((char *) buf, 8);
+    fo_key.write((char *) buf, 8);
   }
   cerr << "Key generation complete\n";
-  fo.close();
+  fo_key.close();
 
   // now, write positions
-  string fn = "pos_uint32";
+  fn = "pos_uint32";
   cerr << "writing positions in " << fn << endl;
 
-  ofstream fo(fn.c_str(), ios::binary);
+  ofstream fo_pos(fn.c_str(), ios::binary);
 
   eof = (uint64_t) valid;
-  fo.write((char *) &eof, 8);
+  fo_pos.write((char *) &eof, 8);
 
   try {
     cerr << "Fast writing posv (" << eof << ")\n";
     uint32_t *buf = new uint32_t[eof];
-    for (size_t i = 0; i < eof; i++) {
+    for (i = 0; i < eof; i++) {
       buf[i] = data[i].pos;
     }
-    fo.write((char *) buf, eof * sizeof(uint32_t));
+    fo_pos.write((char *) buf, eof * sizeof(uint32_t));
     delete[] buf;
   } catch (std::bad_alloc e) {
     cerr << "Fall back to slow writing posv due to low mem.\n";
-    for (size_t i = 0; i < eof; i++) {
-      fo.write((char *) &data[i].pos, 4);
+    for (i = 0; i < eof; i++) {
+      fo_pos.write((char *) &data[i].pos, 4);
     }
   }
 
   cerr << "Position generation complete\n";
-  fo.close();
+  fo_pos.close();
 
   return true;
 }
