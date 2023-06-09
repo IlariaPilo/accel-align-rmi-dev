@@ -8,21 +8,27 @@ TBB_LIB = /usr/lib/x86_64-linux-gnu/libtbb.so
 TBBFLAGS = -L$(TBB_LIB) -ltbb
 
 # Source file and binary file paths
-SRC=$(wildcard src/*.cpp)
-#OBJ=$(patsubst src/%.cpp, bin/%.o, $(SRC))
-BIN=$(patsubst src/%.cpp, bin/%, $(SRC))
+SRC = src/key_gen.cpp src/index_gen.cpp src/rmi.cpp
+OBJ = bin/rmi.o
+BIN_DIR = bin
+BIN = $(BIN_DIR)/key_gen $(BIN_DIR)/index_gen
 
 # Targets
-all: bin $(BIN)
+all: $(BIN)
 
-bin/%: src/%.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $< $(TBBFLAGS)
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
 
-bin:
-	mkdir -p bin
-	@echo $(BIN)
+$(BIN_DIR)/key_gen: ./src/key_gen.cpp | $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) -o $@ $< $(TBBFLAGS)
+
+$(BIN_DIR)/index_gen: ./src/index_gen.cpp $(BIN_DIR)/rmi.o | $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(TBBFLAGS)
+
+$(BIN_DIR)/rmi.o: ./src/rmi.cpp | $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 clean:
-	rm -rf bin
+	rm -rf $(BIN_DIR)
 
 .PHONY: all clean
