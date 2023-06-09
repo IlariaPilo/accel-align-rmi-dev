@@ -4,7 +4,7 @@ CXXFLAGS = -std=c++14 -Wall -Wextra -O3 -I./include
 
 # TBB settings
 TBB_INCLUDE = /usr/include/tbb
-TBB_LIB = /usr/lib/x86_64-linux-gnu/libtbb.so
+TBB_PATH = /usr/lib/x86_64-linux-gnu/libtbb.so
 TBBFLAGS = -L$(TBB_PATH)/lib -ltbb
 
 # Source file and binary file paths
