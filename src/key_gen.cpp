@@ -123,7 +123,6 @@ bool Index::key_gen() {
   }
   
   string fn = "keys_uint32";
-  cerr << "writing keys in " << fn << endl;
 
   ofstream fo_key(fn.c_str(), ios::binary);
 
@@ -142,8 +141,8 @@ bool Index::key_gen() {
       }
   }
   valid = i;
-  cerr << "Found " << eof << " valid entries out of " <<
-       data.size() << " total\n";
+  cerr << "Found " << eof << " valid keys and " << valid << " valid positions out of " <<
+       data.size() << " total\n\n";
   // The number of entries is required to be a 64-bit value
   fo_key.write((char *) &eof, 8);
 
@@ -195,12 +194,11 @@ bool Index::key_gen() {
     buf[1] = same;
     fo_key.write((char *) buf, 8);
   }
-  cerr << "Key generation complete\n";
+  cerr << "Key generation complete!\n\n";
   fo_key.close();
 
   // now, write positions
   fn = "pos_uint32";
-  cerr << "writing positions in " << fn << endl;
 
   ofstream fo_pos(fn.c_str(), ios::binary);
 
@@ -222,7 +220,7 @@ bool Index::key_gen() {
     }
   }
 
-  cerr << "Position generation complete\n";
+  cerr << "Position generation complete!\n\n";
   fo_pos.close();
 
   return true;
